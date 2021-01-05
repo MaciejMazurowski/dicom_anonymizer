@@ -1,4 +1,4 @@
-# dicom_anonymizer
+# Dicom Anonymizer
 Medical image data is often stored in [DICOM](https://en.wikipedia.org/wiki/DICOM), which incorporates various modalities
 of images (such as CT, MRI) as well as tags. Since some tags (such as Patient Name) contain PHI, these information should
 be removed before the data can be released publicly. This python code utilizes [pydicom](https://pydicom.github.io/) to 
@@ -12,8 +12,31 @@ in IEEE Transactions on Pattern Analysis and Machine Intelligence, doi: 10.1109/
 
 Please cite this paper if you find this code useful. For those who would like to use the [DicomAnonymizer](https://mircwiki.rsna.org/index.php?title=CTP-The_RSNA_Clinical_Trial_Processor#DicomAnonymizer) module in 
 [RSNA MIRC Clinical Trials Processor (CTP)](https://mircwiki.rsna.org/index.php?title=Main_Page),an example can be found here. 
+## Dependencies
+Dicom Anonymizer depends on the following libraries:
+1. Pydicom
+2. tqdm
 
+## Demo
+We created a toy dataset in *dataset/mabaoguo* that contains two patients: **patient_1** and **patient_2**. **patient_1**
+has 1 exam while **patient_2** has two exams. In each exam there are several series and in each series there are several
+dicoms. After running the following script:
+```
+python demo.py
+```
+There will be a new folder called *mabaoguo_anonymized* created just under *dataset*, and the original dataset and the 
+anonymized datset have the same structure. We added as many as possible comments in the code, please refer to the code for
+more details. Both the original and the anonymized dicoms should be viewed in dicom viewers
+such as Osirix.
 
+## Team
+1. [Zhe Zhu](https://github.com/ajex1988)
+2. [Maciej Mazurowski](https://sites.duke.edu/mazurowski/)
+3. [Mustafa Bashir](https://radiology.duke.edu/faculty/member/mustafa-r-bashir/)
+4. Brandon Konkel
+
+Special thanks to Brandon Konkel for testing the code. Please contact Zhe Zhu(ajex1988@gmail.com) if you have any question
+about this code.
 ### bibtex
 ```
 @ARTICLE{9242262,
