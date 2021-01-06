@@ -94,28 +94,6 @@ class DatasetAnonymizer:
                 digits += s
         return digits
 
-    def fmtSeriesID(self,s):
-        left_brace_index = s.find('(')
-        right_brace_index = s.find(')')
-        fmtSeriesID = ""
-        if left_brace_index == -1 and right_brace_index == -1:
-            # only number
-            fmtSeriesID = s.strip()
-        elif left_brace_index != -1 and right_brace_index != -1:
-            # slice or odd or even
-            number_str = s[:left_brace_index].strip()
-            odd_index = s.find('odd')
-            even_index = s.find('even')
-            bar_index = s.find('-')
-            if odd_index != -1:
-                fmtSeriesID = number_str.strip() + '_odd'
-            elif even_index != -1:
-                fmtSeriesID = number_str.strip() + '_even'
-            elif bar_index != -1:
-                begin_str = s[left_brace_index + 1:bar_index]
-                fmtSeriesID = number_str.strip() + '_' + begin_str
-        return fmtSeriesID
-
     def anonymizeDicom(self,dcm):
         '''
         Anonymize a dicom by pre-defined rules
@@ -136,7 +114,6 @@ class DatasetAnonymizer:
         anonyDcmObj.is_implicit_VR = dcm.is_implicit_VR
 
         for sTag in self.tagsHandler:
-            vr = self.lookupTable["dictionary_vr"][sTag]
             tag = self.str2tag(sTag)
 
             if self.tagsHandler[sTag]["method"] == "keep":
@@ -165,7 +142,11 @@ class DatasetAnonymizer:
             elif self.tagsHandler[sTag]["method"] == "less_than":
                 if tag in dcm:
                     sVal = dcm[tag].value
-                    iVal = int(self.extractDigits(sVal))
+                    digits = self.extractDigits(sVal)
+                    if digits!='':
+                        iVal = int(self.extractDigits(sVal))
+                    else:
+                        iVal = 50 # Use an average age
                     maxVal = int(self.tagsHandler[sTag]["value"])
                     if iVal > maxVal:
                         modifiedVal = maxVal
@@ -191,7 +172,7 @@ class DatasetAnonymizer:
             os.makedirs(self.outputFolder)
 
         patient_folder_list = glob.glob(self.inputFolder+"/*")
-        for patient_folder in patient_folder_list:
+        for patient_folder in tqdm(patient_folder_list):
             patient_id = os.path.basename(patient_folder)
             anonymized_patient_id = self.lookupTable["PatientName"][patient_id]
             output_patient_folder = os.path.join(self.outputFolder,anonymized_patient_id)
@@ -201,7 +182,7 @@ class DatasetAnonymizer:
 
             exam_folder_list = glob.glob(patient_folder+"/*")
 
-            for exam_folder in tqdm(exam_folder_list):
+            for exam_folder in exam_folder_list:
                 exam_id = os.path.basename(exam_folder)
                 output_exam_folder = os.path.join(output_patient_folder,exam_id)
 
