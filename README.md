@@ -11,7 +11,7 @@ in IEEE Transactions on Pattern Analysis and Machine Intelligence, doi: 10.1109/
 [[link]](https://ieeexplore.ieee.org/abstract/document/9242262) [[bibtex]](#bibtex)
 
 Please cite this paper if you find this code useful. For those who would like to use the [DicomAnonymizer](https://mircwiki.rsna.org/index.php?title=CTP-The_RSNA_Clinical_Trial_Processor#DicomAnonymizer) module in 
-[RSNA MIRC Clinical Trials Processor (CTP)](https://mircwiki.rsna.org/index.php?title=Main_Page),an example can be found here. 
+[RSNA MIRC Clinical Trials Processor (CTP)](https://mircwiki.rsna.org/index.php?title=Main_Page),an example can be found [here](https://github.com/ajex1988/mirc_ctp_dicom_anonymizer). 
 ## Dependencies
 Dicom Anonymizer depends on the following libraries:
 1. Pydicom
