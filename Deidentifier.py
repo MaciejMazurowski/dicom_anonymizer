@@ -7,11 +7,11 @@ import xml.etree.ElementTree as ET
 from pydicom import config
 config.enforce_valid_values = True
 
-class DatasetAnonymizer:
+class DatasetDeidentifier:
     '''
-    Dataset Anonymizer. This class is used to anonymize the entire dataset
+    Dataset Deidentifier. This class is used to deidentify the entire dataset
     inputFolder: original dataset folder
-    outputFolder: anonymized dataset folder
+    outputFolder: deidentified dataset folder
     scriptFile: xml file describing how to deal with each tag
     '''
     def __init__(self,inputFolder,outputFolder,scriptFile):
@@ -21,7 +21,7 @@ class DatasetAnonymizer:
         self.lookupTableFile = ""
         self.parseScript()
         self.parseLookupTableFile()
-        print("Dicom Anonymizer Initialized")
+        print("Dicom Deidentifier Initialized")
         print("Use Script File: {0}".format(self.scriptFile))
         print("Use Lookup Table File: {0}".format(self.lookupTableFile))
 
@@ -94,24 +94,24 @@ class DatasetAnonymizer:
                 digits += s
         return digits
 
-    def anonymizeDicom(self,dcm):
+    def deidentifyDicom(self,dcm):
         '''
-        Anonymize a dicom by pre-defined rules
-        dcm: loaded dicom file to anonymize
+        Deidentify a dicom by pre-defined rules
+        dcm: loaded dicom file to deidentify
         dict: additional information obtained outside the dicom, such as exam_id, series_id from directory
-        return an anonymized dicom by creating a new one
+        return an deidentified dicom by creating a new one
         '''
-        anonyDcmObj = pydicom.dataset.Dataset()
+        deidentDcmObj = pydicom.dataset.Dataset()
 
         # copy pixel_array
         arr = dcm.pixel_array
-        anonyDcmObj.PixelData = arr.tobytes()
+        deidentDcmObj.PixelData = arr.tobytes()
 
         # set the required fields
-        anonyDcmObj.preamble = dcm.preamble
-        anonyDcmObj.file_meta = dcm.file_meta
-        anonyDcmObj.is_little_endian = dcm.is_little_endian
-        anonyDcmObj.is_implicit_VR = dcm.is_implicit_VR
+        deidentDcmObj.preamble = dcm.preamble
+        deidentDcmObj.file_meta = dcm.file_meta
+        deidentDcmObj.is_little_endian = dcm.is_little_endian
+        deidentDcmObj.is_implicit_VR = dcm.is_implicit_VR
 
         for sTag in self.tagsHandler:
             tag = self.str2tag(sTag)
@@ -119,7 +119,7 @@ class DatasetAnonymizer:
             if self.tagsHandler[sTag]["method"] == "keep":
                 if tag in dcm:
                     elem = dcm[tag]
-                    anonyDcmObj.add(elem)
+                    deidentDcmObj.add(elem)
                 elif tag in dcm.file_meta:
                     # because file_meta has already been copied
                     pass
@@ -128,17 +128,17 @@ class DatasetAnonymizer:
                     if tag in dcm:
                         elem = dcm[tag]
                         elem.value = self.tagsHandler[sTag]["value"]
-                        anonyDcmObj.add(elem)
+                        deidentDcmObj.add(elem)
                     else:
                         # The tag belongs to file_meta
-                        anonyDcmObj.file_meta[tag].value = self.tagsHandler[sTag]["value"]
+                        deidentDcmObj.file_meta[tag].value = self.tagsHandler[sTag]["value"]
 
             elif self.tagsHandler[sTag]["method"] == "lookup":
                 if tag in dcm:
                     tagName = self.lookupTable["Tag2Name"][str(tag).replace(" ","")]
                     elem = dcm[tag]
                     elem.value = self.lookupTable[tagName][str(dcm[tag].value)]
-                    anonyDcmObj.add(elem)
+                    deidentDcmObj.add(elem)
             elif self.tagsHandler[sTag]["method"] == "less_than":
                 if tag in dcm:
                     sVal = dcm[tag].value
@@ -154,18 +154,18 @@ class DatasetAnonymizer:
                         modifiedVal = iVal
                     elem = dcm[tag]
                     elem.value = "{:03d}Y".format(modifiedVal)
-                    anonyDcmObj.add(elem)
+                    deidentDcmObj.add(elem)
             else:
                 raise NameError('Unknown Method')
-        return anonyDcmObj
+        return deidentDcmObj
 
-    def anonymizeDataset(self):
+    def deidentifyDataset(self):
         '''
-        Anonymize a dataset that has the following hierarchy:
+        Deidentify a dataset that has the following hierarchy:
         Dataset/Patient/Exam/Series/DicomFiles
         '''
         dataset_name = os.path.basename(self.inputFolder)
-        print("Anonymizing {0}".format(dataset_name))
+        print("Deidentifying {0}".format(dataset_name))
         print("Assuming the dataset has the Dataset/Patient/Exam/Series/DicomFiles hierarchy")
 
         if not os.path.exists(self.outputFolder):
@@ -174,8 +174,8 @@ class DatasetAnonymizer:
         patient_folder_list = glob.glob(self.inputFolder+"/*")
         for patient_folder in tqdm(patient_folder_list):
             patient_id = os.path.basename(patient_folder)
-            anonymized_patient_id = self.lookupTable["PatientName"][patient_id]
-            output_patient_folder = os.path.join(self.outputFolder,anonymized_patient_id)
+            deidentified_patient_id = self.lookupTable["PatientName"][patient_id]
+            output_patient_folder = os.path.join(self.outputFolder,deidentified_patient_id)
 
             if not os.path.exists(output_patient_folder):
                 os.makedirs(output_patient_folder)
@@ -202,15 +202,15 @@ class DatasetAnonymizer:
                     dicom_file_list = glob.glob(series_folder+"/*")
                     for dicom_file in dicom_file_list:
                         dcm = pydicom.dcmread(dicom_file)
-                        anonymized_dcm = self.anonymizeDicom(dcm)
+                        deidentified_dcm = self.deidentifyDicom(dcm)
 
                         dicom_file_name = os.path.basename(dicom_file)
-                        anonDcmFile = os.path.join(output_series_folder,dicom_file_name)
-                        pydicom.filewriter.dcmwrite(anonDcmFile,anonymized_dcm)
+                        deidentDcmFile = os.path.join(output_series_folder,dicom_file_name)
+                        pydicom.filewriter.dcmwrite(deidentDcmFile,deidentified_dcm)
 
 
 if __name__=="__main__":
-    print("Dicom Anonymizer.")
+    print("Dicom Deidentifier")
     print(" Please check demo.py for more examples.")
 
 
