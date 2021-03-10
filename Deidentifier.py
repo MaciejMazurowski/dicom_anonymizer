@@ -191,10 +191,11 @@ class DatasetDeidentifier:
 
                 series_folder_list = glob.glob(exam_folder+"/*")
 
-                for series_folder in series_folder_list:
-                    series_id = os.path.basename(series_folder)
-                    series_id = series_id.replace(" ","") # trim space
-                    output_series_folder = os.path.join(output_exam_folder,series_id)
+                # sort && rename the series folders
+                series_folder_list.sort()
+
+                for i,series_folder in enumerate(series_folder_list):
+                    output_series_folder = os.path.join(output_exam_folder,"{0}".format(i+1))
 
                     if not os.path.exists(output_series_folder):
                         os.makedirs(output_series_folder)
