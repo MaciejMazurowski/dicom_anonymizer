@@ -21,7 +21,7 @@ Dicom Anonymizer depends on the following libraries:
 ![Pipeline](img/AnonymizerPipeline.png)
 ## Demo
 We created a toy dataset in *dataset/mabaoguo* that contains two patients: **patient_1** and **patient_2**. **patient_1**
-has 1 exam while **patient_2** has two exams. In each exam there are several series and in each series there are several
+has 2 exams while **patient_2** has 1 exam. In each exam there are several series and in each series there are several
 dicoms. After running the following script:
 ```
 python demo.py
