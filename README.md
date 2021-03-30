@@ -20,16 +20,24 @@ Dicom Anonymizer depends on the following libraries:
 ## Overview
 ![Pipeline](img/AnonymizerPipeline.png)
 ## Demo
-We created a toy dataset in *dataset/mabaoguo* that contains two patients: **patient_1** and **patient_2**. **patient_1**
-has 2 exams while **patient_2** has 1 exam. In each exam there are several series and in each series there are several
+We created a toy dataset in *dataset/mabaoguo* that contains two patients: **Jack** and **Pony**. **Jack**
+has 2 exams while **Pony** has 1 exam. In each exam there are several series and in each series there are several
 dicoms. After running the following script:
 ```
 python demo.py
 ```
-There will be a new folder called *mabaoguo_anonymized* created just under *dataset*, and the original dataset and the 
-anonymized datset have the same structure. We added as many as possible comments in the code, please refer to the code for
+There will be a new folder called *mabaoguo_deidentified* created just under *dataset*, and the original dataset and the 
+deidentified datset have the same structure. We added as many as possible comments in the code, please refer to the code for
 more details. Both the original and the anonymized dicoms should be viewed in dicom viewers
 such as Osirix.
+
+Before running the script, the image and tags viewed in Osirix:
+![Pipeline](img/before_img.png)
+![Pipeline](img/before_tag.png)
+
+After the deidentification, the image and tags viewed in Osirix:
+![Pipeline](img/after_img.png)
+![Pipeline](img/after_tag.png)
 
 ## Team
 1. [Zhe Zhu](https://github.com/ajex1988)
