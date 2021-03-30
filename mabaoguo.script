@@ -1,0 +1,23 @@
+<scripts>
+    # tags that keep the original value
+    <e t="0028,0100" n="Bits Allocated" f="keep"/>
+    <e t="0028,0101" n="Bits Stored" f="keep"/>
+    <e t="0018,0015" n="Body Part Examined" f="keep"/>
+    <e t="0028,0011" n="Columns" f="keep"/>
+    <e t="0028,0102" n="High Bit" f="keep"/>
+    <e t="0028,0107" n="Largest Image Pixel Value" f="keep"/>
+    <e t="0028,0010" n="Rows" f="keep"/>
+    <e t="0028,0106" n="Smallest Image Pixel Value" f="keep"/>
+    <e t="0028,0002" n="SamplesPerPixel" f="keep"/>
+    <e t="0028,0004" n="PhotometricInterpretation" f="keep"/>
+    <e t="0028,0103" n="PixelRepresentation" f="keep"/>
+    # tags that assign a constant value
+    <e t="0008,0008" n="ImageType" f="const" v="ORIGINAL"/>
+    # tags that assign an empty value
+    <e t="0008,0012" n="InstanceCreationDate" f="empty"/>
+    <e t="0008,0013" n="InstanceCreationTime" f="empty"/>
+    # tags that use an external lookup table to find the value
+    <e t="0010,0010" n="Patient Name" f="lookup" p="mabaoguo.config"/>
+    # tags that adopt a conditional strategy
+    <e t="0010,1010" n="Patient Age" f="less_than" v="89"/>
+</scripts>
