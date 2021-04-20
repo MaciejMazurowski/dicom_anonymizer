@@ -59,3 +59,8 @@ about this code.
   pages={1-1},
   doi={10.1109/TPAMI.2020.3033990}}
 ```
+## License
+[Apache License v2.0](LICENSE)
+## Disclaimer
+We take NO responsibility/liability for how you choose to use any of the source code available here, the use of this code is your responsibility.
+By using any of the files available in this repository, you understand that you are AGREEING TO USE AT YOUR OWN RISK. 
